@@ -46,19 +46,6 @@ body::after{
     --orb2:rgba(108,99,255,0.06);--input-bg:rgba(255,255,255,0.80);
     --modal-bg:rgba(240,244,255,0.97);--scrollbar:rgba(59,158,255,0.18);
 }
-/* Light theme petroglyphs — warm terracotta / stone style */
-[data-theme="light"] body::before{
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Crect width='320' height='320' fill='%23e8ddd0'/%3E%3Cg stroke='%23a0714f' stroke-width='1.8' fill='none' opacity='0.30'%3E%3C!--%20Человек%201%20--%3E%3Ccircle cx='48' cy='32' r='7'/%3E%3Cline x1='48' y1='39' x2='48' y2='62'/%3E%3Cline x1='48' y1='48' x2='33' y2='58'/%3E%3Cline x1='48' y1='48' x2='63' y2='58'/%3E%3Cline x1='48' y1='62' x2='37' y2='78'/%3E%3Cline x1='48' y1='62' x2='59' y2='78'/%3E%3C!--%20Олень%20--%3E%3Cellipse cx='140' cy='48' rx='20' ry='10'/%3E%3Ccircle cx='160' cy='43' r='7'/%3E%3Cline x1='160' y1='36' x2='154' y2='24'/%3E%3Cline x1='160' y1='36' x2='167' y2='24'/%3E%3Cline x1='154' y1='24' x2='151' y2='16'/%3E%3Cline x1='167' y1='24' x2='170' y2='16'/%3E%3Cline x1='120' y1='58' x2='113' y2='72'/%3E%3Cline x1='130' y1='58' x2='126' y2='72'/%3E%3Cline x1='150' y1='58' x2='147' y2='72'/%3E%3Cline x1='160' y1='58' x2='163' y2='72'/%3E%3C!--%20Солнце%20--%3E%3Ccircle cx='262' cy='40' r='14'/%3E%3Cline x1='262' y1='20' x2='262' y2='13'/%3E%3Cline x1='262' y1='60' x2='262' y2='67'/%3E%3Cline x1='242' y1='40' x2='235' y2='40'/%3E%3Cline x1='282' y1='40' x2='289' y2='40'/%3E%3Cline x1='248' y1='26' x2='243' y2='21'/%3E%3Cline x1='276' y1='54' x2='281' y2='59'/%3E%3Cline x1='276' y1='26' x2='281' y2='21'/%3E%3Cline x1='248' y1='54' x2='243' y2='59'/%3E%3C!--%20Человек%202%20руки%20вверх%20--%3E%3Ccircle cx='48' cy='122' r='7'/%3E%3Cline x1='48' y1='129' x2='48' y2='152'/%3E%3Cline x1='48' y1='137' x2='30' y2='125'/%3E%3Cline x1='48' y1='137' x2='66' y2='125'/%3E%3Cline x1='48' y1='152' x2='37' y2='168'/%3E%3Cline x1='48' y1='152' x2='59' y2='168'/%3E%3C!--%20Рыба%20--%3E%3Cellipse cx='165' cy='140' rx='24' ry='9'/%3E%3Cpolyline points='189,140 203,129 203,151 189,140'/%3E%3Cline x1='143' y1='133' x2='187' y2='133'/%3E%3Cline x1='143' y1='140' x2='188' y2='140'/%3E%3Cline x1='143' y1='147' x2='187' y2='147'/%3E%3C!--%20Горы%20--%3E%3Cpolyline points='224,172 250,122 276,172'/%3E%3Cpolyline points='242,172 265,135 288,172'/%3E%3Cline x1='218' y1='172' x2='295' y2='172'/%3E%3C!--%20Спираль%20--%3E%3Cpath d='M50 232 C50 221 61 215 68 222 C75 229 72 242 61 246 C50 250 39 241 39 230 C39 219 50 209 61 208'/%3E%3C!--%20Лодка%20с%20парусом%20--%3E%3Cpath d='M108 256 Q140 243 172 256'/%3E%3Cline x1='108' y1='256' x2='104' y2='272'/%3E%3Cline x1='172' y1='256' x2='176' y2='272'/%3E%3Cline x1='104' y1='272' x2='176' y2='272'/%3E%3Cline x1='140' y1='243' x2='140' y2='220'/%3E%3Cpolyline points='140,220 157,232 140,238'/%3E%3C!--%20Птица%20--%3E%3Cpath d='M228 238 C237 229 254 229 263 238'/%3E%3Cline x1='245' y1='238' x2='245' y2='256'/%3E%3Cline x1='245' y1='256' x2='236' y2='270'/%3E%3Cline x1='245' y1='256' x2='254' y2='270'/%3E%3Ccircle cx='263' cy='235' r='4'/%3E%3C!--%20Волны%20воды%20--%3E%3Cpath d='M16 288 Q32 279 48 288 Q64 297 80 288 Q96 279 112 288'/%3E%3Cpath d='M16 300 Q32 291 48 300 Q64 309 80 300 Q96 291 112 300'/%3E%3C!--%20Мамонт%20--%3E%3Cellipse cx='240' cy='296' rx='30' ry='15'/%3E%3Ccircle cx='270' cy='290' r='9'/%3E%3Cline x1='270' y1='281' x2='264' y2='268'/%3E%3Cline x1='270' y1='281' x2='277' y2='268'/%3E%3Cline x1='210' y1='311' x2='204' y2='320'/%3E%3Cline x1='222' y1='311' x2='218' y2='320'/%3E%3Cline x1='256' y1='311' x2='253' y2='320'/%3E%3Cline x1='268' y1='311' x2='271' y2='320'/%3E%3Cpath d='M270 299 Q281 304 284 313'/%3E%3C!--%20Охотник%20с%20копьём%20--%3E%3Ccircle cx='160' cy='216' r='6'/%3E%3Cline x1='160' y1='222' x2='160' y2='242'/%3E%3Cline x1='160' y1='229' x2='148' y2='238'/%3E%3Cline x1='160' y1='229' x2='175' y2='222'/%3E%3Cline x1='175' y1='222' x2='196' y2='218'/%3E%3Cpolyline points='196,218 192,214 196,222'/%3E%3Cline x1='160' y1='242' x2='151' y2='256'/%3E%3Cline x1='160' y1='242' x2='169' y2='256'/%3E%3C/g%3E%3C/svg%3E");
-    background-size:320px 320px;
-    background-repeat:repeat;
-    opacity:1;
-}
-[data-theme="light"] body::after{
-    background:
-        radial-gradient(ellipse at 15% 15%,rgba(180,120,60,0.06) 0%,transparent 55%),
-        radial-gradient(ellipse at 85% 85%,rgba(150,90,40,0.08) 0%,transparent 55%);
-}
-[data-theme="light"] html,[data-theme="light"] body{background:#e8ddd0;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:'Outfit',sans-serif;background:#07101f;color:var(--txt);overflow:hidden;transition:background .35s,color .35s}
 /* orb animations replaced by petroglyphs background */
@@ -164,10 +151,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:#07101f;color:v
 .read-status.seen{color:var(--accent)}
 
 /* message actions (hover) */
-.msg-actions{display:flex;gap:3px;margin-top:3px;opacity:0;transition:opacity .15s;pointer-events:none}
-.bubble:hover .msg-actions,.bubble:focus-within .msg-actions{opacity:1;pointer-events:all}
-.msg-action-btn{background:var(--glass);border:1px solid var(--glass-b);border-radius:8px;padding:3px 7px;cursor:pointer;font-size:.88em;transition:.12s;color:var(--txt2)}
-.msg-action-btn:hover{background:rgba(59,158,255,.15);border-color:rgba(59,158,255,.35)}
+.msg-actions{display:none!important}
 
 /* reply bar */
 #reply-bar{display:none;padding:8px 16px;background:rgba(59,158,255,.08);border-top:1px solid rgba(59,158,255,.2);align-items:center;gap:10px}
@@ -527,7 +511,6 @@ code{background:rgba(59,158,255,.12);border:1px solid rgba(59,158,255,.2);border
     #ch-title{font-size:.92em}
     #ch-sub{font-size:.68em}
     .e2ee-badge{font-size:.65em;padding:2px 7px}
-    .head-call-btns{display:flex!important;gap:4px}
 
     /* Messages — no extra bottom padding needed (chat stops above nav) */
     #messages{padding:12px 10px;gap:4px}
@@ -540,7 +523,7 @@ code{background:rgba(59,158,255,.12);border:1px solid rgba(59,158,255,.2);border
     .inp-bar input{font-size:16px;padding:10px 10px;border-radius:22px;min-width:0;flex:1}
     .send-btn{width:42px;height:42px;min-width:42px;border-radius:50%;font-size:1em;flex-shrink:0;display:flex!important}
     .attach-btn{width:36px;height:36px;min-width:36px;border-radius:50%;font-size:1.05em;flex-shrink:0}
-    .mic-btn{width:36px;height:36px;min-width:36px;border-radius:50%;flex-shrink:0;display:flex!important}
+    .mic-btn{width:36px;height:36px;min-width:36px;border-radius:50%;flex-shrink:0}
     .emoji-trigger{display:none!important}
     .call-btns{display:none!important}
     #call-btns{display:none!important}
@@ -764,9 +747,6 @@ code{background:rgba(59,158,255,.12);border:1px solid rgba(59,158,255,.2);border
       <div class="head-call-btns" id="head-call-btns" style="display:none">
         <button class="head-call-btn" onclick="startCall('audio')" title="Голосовой звонок">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        </button>
-        <button class="head-call-btn" onclick="startCall('video')" title="Видеозвонок">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
         </button>
         <button class="head-call-btn" onclick="startCall('screen')" title="Демонстрация экрана">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
