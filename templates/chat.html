@@ -17,6 +17,27 @@
     --orb2:rgba(108,99,255,0.10);--input-bg:rgba(255,255,255,0.06);
     --modal-bg:rgba(10,18,36,0.93);--scrollbar:rgba(255,255,255,0.10);
     --online:#2ecc71;--offline:#666;
+    --petro-bg:#07101f;--petro-line:rgba(59,120,255,0.18);
+}
+/* Петроглифы SVG фон */
+body::before{
+    content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%2307101f'/%3E%3Cg stroke='%233b78ff' stroke-width='1.5' fill='none' opacity='0.18'%3E%3C!-- Фигурка человека 1 --%3E%3Ccircle cx='60' cy='40' r='8'/%3E%3Cline x1='60' y1='48' x2='60' y2='75'/%3E%3Cline x1='60' y1='57' x2='44' y2='68'/%3E%3Cline x1='60' y1='57' x2='76' y2='68'/%3E%3Cline x1='60' y1='75' x2='47' y2='92'/%3E%3Cline x1='60' y1='75' x2='73' y2='92'/%3E%3C!-- Олень --%3E%3Cellipse cx='160' cy='60' rx='22' ry='12'/%3E%3Ccircle cx='184' cy='55' r='7'/%3E%3Cline x1='184' y1='48' x2='178' y2='36'/%3E%3Cline x1='184' y1='48' x2='192' y2='36'/%3E%3Cline x1='178' y1='36' x2='175' y2='28'/%3E%3Cline x1='192' y1='36' x2='195' y2='28'/%3E%3Cline x1='138' y1='72' x2='130' y2='88'/%3E%3Cline x1='148' y1='72' x2='143' y2='88'/%3E%3Cline x1='172' y1='72' x2='168' y2='88'/%3E%3Cline x1='182' y1='72' x2='185' y2='88'/%3E%3C!-- Солнце --%3E%3Ccircle cx='320' cy='50' r='16'/%3E%3Cline x1='320' y1='27' x2='320' y2='20'/%3E%3Cline x1='320' y1='73' x2='320' y2='80'/%3E%3Cline x1='297' y1='50' x2='290' y2='50'/%3E%3Cline x1='343' y1='50' x2='350' y2='50'/%3E%3Cline x1='304' y1='34' x2='299' y2='29'/%3E%3Cline x1='336' y1='66' x2='341' y2='71'/%3E%3Cline x1='336' y1='34' x2='341' y2='29'/%3E%3Cline x1='304' y1='66' x2='299' y2='71'/%3E%3C!-- Фигурка человека 2 с поднятыми руками --%3E%3Ccircle cx='60' cy='155' r='8'/%3E%3Cline x1='60' y1='163' x2='60' y2='190'/%3E%3Cline x1='60' y1='170' x2='40' y2='158'/%3E%3Cline x1='60' y1='170' x2='80' y2='158'/%3E%3Cline x1='60' y1='190' x2='47' y2='207'/%3E%3Cline x1='60' y1='190' x2='73' y2='207'/%3E%3C!-- Рыба --%3E%3Cellipse cx='180' cy='170' rx='28' ry='11'/%3E%3Cpolyline points='208,170 224,158 224,182 208,170'/%3E%3Cline x1='160' y1='162' x2='200' y2='162'/%3E%3Cline x1='160' y1='170' x2='205' y2='170'/%3E%3Cline x1='160' y1='178' x2='200' y2='178'/%3E%3C!-- Горы --%3E%3Cpolyline points='280,210 310,150 340,210'/%3E%3Cpolyline points='300,210 330,165 360,210'/%3E%3Cline x1='275' y1='210' x2='370' y2='210'/%3E%3C!-- Спираль --%3E%3Cpath d='M60 280 C60 268 72 262 80 270 C88 278 84 292 72 296 C60 300 48 290 48 278 C48 266 60 255 72 254'/%3E%3C!-- Лодка --%3E%3Cpath d='M130 310 Q170 295 210 310'/%3E%3Cline x1='130' y1='310' x2='125' y2='330'/%3E%3Cline x1='210' y1='310' x2='215' y2='330'/%3E%3Cline x1='125' y1='330' x2='215' y2='330'/%3E%3Cline x1='170' y1='295' x2='170' y2='270'/%3E%3Cpolyline points='170,270 190,280 170,285'/%3E%3C!-- Птица --%3E%3Cpath d='M290 290 C300 280 320 280 330 290'/%3E%3Cpath d='M310 290 L310 310'/%3E%3Cline x1='310' y1='310' x2='300' y2='325'/%3E%3Cline x1='310' y1='310' x2='320' y2='325'/%3E%3Ccircle cx='330' cy='287' r='4'/%3E%3C!-- Волнистые линии воды --%3E%3Cpath d='M20 350 Q40 340 60 350 Q80 360 100 350 Q120 340 140 350'/%3E%3Cpath d='M20 365 Q40 355 60 365 Q80 375 100 365 Q120 355 140 365'/%3E%3C!-- Бык/мамонт --%3E%3Cellipse cx='300' cy='360' rx='35' ry='18'/%3E%3Ccircle cx='335' cy='353' r='10'/%3E%3Cline x1='335' y1='343' x2='328' y2='330'/%3E%3Cline x1='335' y1='343' x2='342' y2='330'/%3E%3Cline x1='265' y1='378' x2='258' y2='395'/%3E%3Cline x1='278' y1='378' x2='273' y2='395'/%3E%3Cline x1='320' y1='378' x2='316' y2='395'/%3E%3Cline x1='333' y1='378' x2='336' y2='395'/%3E%3Cpath d='M335 363 Q348 368 352 378'/%3E%3C/g%3E%3C/svg%3E");
+    background-size:400px 400px;
+    background-repeat:repeat;
+    opacity:1;
+    animation:none;
+    filter:none;
+    width:100%;height:100%;
+    border-radius:0;
+}
+body::after{
+    content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(ellipse at 20% 20%,rgba(59,120,255,0.08) 0%,transparent 60%),
+               radial-gradient(ellipse at 80% 80%,rgba(30,60,180,0.12) 0%,transparent 60%);
+    animation:none;
+    width:100%;height:100%;
+    border-radius:0;
 }
 [data-theme="light"] {
     --bg:#f0f4ff;--bg2:#e2eaff;--sidebar:rgba(255,255,255,0.70);
@@ -28,12 +49,8 @@
     --modal-bg:rgba(240,244,255,0.97);--scrollbar:rgba(59,158,255,0.18);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:'Outfit',sans-serif;background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);color:var(--txt);overflow:hidden;transition:background .35s,color .35s}
-body::before,body::after{content:'';position:fixed;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none}
-body::before{width:600px;height:600px;background:radial-gradient(circle,var(--orb1) 0%,transparent 70%);top:-150px;left:-150px;animation:orb1 12s ease-in-out infinite alternate}
-body::after{width:500px;height:500px;background:radial-gradient(circle,var(--orb2) 0%,transparent 70%);bottom:-100px;right:-100px;animation:orb2 15s ease-in-out infinite alternate}
-@keyframes orb1{from{transform:translate(0,0)}to{transform:translate(60px,40px)}}
-@keyframes orb2{from{transform:translate(0,0)}to{transform:translate(-40px,-60px)}}
+html,body{height:100%;font-family:'Outfit',sans-serif;background:#07101f;color:var(--txt);overflow:hidden;transition:background .35s,color .35s}
+/* orb animations replaced by petroglyphs background */
 .app{display:flex;height:100vh;position:relative;z-index:1}
 .sidebar{width:240px;flex-shrink:0;background:var(--sidebar);backdrop-filter:blur(24px);border-right:1px solid var(--glass-b);display:flex;flex-direction:column}
 
@@ -236,7 +253,7 @@ code{background:rgba(59,158,255,.12);border:1px solid rgba(59,158,255,.2);border
 .call-action-btn:hover{transform:scale(1.08)}
 .call-accept{background:#22c55e;color:white}
 .call-reject{background:#ef4444;color:white}
-.call-end{background:#ef4444;color:white}
+.call-end{background:radial-gradient(circle,#dc2626 0%,#991b1b 100%);color:white;width:74px!important;height:74px!important;box-shadow:0 0 0 6px rgba(220,38,38,.2),0 0 0 12px rgba(220,38,38,.08);border:2px solid rgba(255,255,255,.15)}
 .call-mute{background:var(--glass);color:var(--txt);border:1px solid var(--glass-b)}
 .call-mute.active{background:rgba(255,80,80,.2);color:#ff5050}
 .call-cam{background:var(--glass);color:var(--txt);border:1px solid var(--glass-b)}
@@ -419,7 +436,6 @@ code{background:rgba(59,158,255,.12);border:1px solid rgba(59,158,255,.2);border
 
 /* ════ MOBILE ════ */
 @media(max-width:680px){
-    body::before,body::after{display:none}
     html,body{height:100%;height:-webkit-fill-available;overflow:hidden}
 
     /* ── Layout: nav-rail bottom, sidebar+chat fill screen ── */
@@ -501,10 +517,14 @@ code{background:rgba(59,158,255,.12);border:1px solid rgba(59,158,255,.2);border
     .bubble.theirs{border-bottom-left-radius:4px}
 
     /* Input bar */
-    .inp-bar{padding:8px 10px;gap:6px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
-    .inp-bar input{font-size:16px;padding:10px 12px;border-radius:22px}
-    .send-btn{width:40px;height:40px;border-radius:50%;font-size:1em}
-    .attach-btn{width:38px;height:38px;border-radius:50%;font-size:1.05em}
+    .inp-bar{padding:8px 10px;gap:5px;padding-bottom:max(8px,env(safe-area-inset-bottom));flex-wrap:nowrap;align-items:center}
+    .inp-bar input{font-size:16px;padding:10px 10px;border-radius:22px;min-width:0;flex:1}
+    .send-btn{width:42px;height:42px;min-width:42px;border-radius:50%;font-size:1em;flex-shrink:0;display:flex!important}
+    .attach-btn{width:36px;height:36px;min-width:36px;border-radius:50%;font-size:1.05em;flex-shrink:0}
+    .mic-btn{width:36px;height:36px;min-width:36px;border-radius:50%;flex-shrink:0}
+    .emoji-trigger{display:none!important}
+    .call-btns{display:none!important}
+    #call-btns{display:none!important}
 
     /* User list items */
     .u-item{padding:12px 14px;border-radius:0;margin:0;border-bottom:1px solid var(--glass-b)}
@@ -801,7 +821,17 @@ code{background:rgba(59,158,255,.12);border:1px solid rgba(59,158,255,.2);border
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
     </button>
     <button class="call-action-btn call-end" onclick="endCall()" title="Завершить">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A2 2 0 0 1 10.68 13.31z"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      <svg width="30" height="30" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Adult hand reaching down -->
+        <path d="M20 18 C20 14 23 12 26 13 L32 15 C35 16 36 18 36 21 L36 28" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M26 13 L26 10 C26 8 27.5 7 29 7 C30.5 7 32 8 32 10 L32 15" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M20 18 L20 22 C20 24 21.5 25 23 25 L36 28 C38 28.5 39 30 38 32 L37 34" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <!-- Child's small finger reaching up -->
+        <path d="M30 38 C30 40 31 42 33 42 C35 42 36 40 36 38 L36 34" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M34 34 L37 34 C38 34 38.5 35 38 36 L37 38" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <!-- X mark - end call indicator -->
+        <line x1="14" y1="46" x2="46" y2="46" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
     </button>
   </div>
 </div>
