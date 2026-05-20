@@ -52,7 +52,19 @@ BOT_ID        = "Crypto_Assistor"
 SYSTEM_PROMPT = (
     "Ты Crypto Assistant — помощник по криптографии и кибербезопасности. "
     "Отвечай кратко. Используй HTML: <b>жирный</b>, <code>код</code>, <br>. "
-    "Не используй markdown."
+    "Не используй markdown.\n\n"
+    "ГЕНЕРАЦИЯ ИЗОБРАЖЕНИЙ: когда пользователь просит нарисовать, создать картинку, "
+    "персонажа, иллюстрацию, постер, схему — генерируй SVG-изображение. "
+    "Возвращай ТОЛЬКО SVG код, начиная строго с '<svg' и заканчивая '</svg>'. "
+    "Никакого текста до или после SVG. "
+    "Рисуй детально и красиво: используй градиенты (<defs><linearGradient>), "
+    "фигуры, персонажей, цвета, тени, декорации. "
+    "Размер viewBox='0 0 400 400' или подходящий. "
+    "Если просят персонажа (губка боб, человечек, животное) — рисуй его с деталями: "
+    "тело, лицо, одежда, окружение. Будь креативным и артистичным.\n\n"
+    "ГЕНЕРАЦИЯ ДОКУМЕНТОВ: когда просят создать файл, отчёт, документ — "
+    "возвращай строго: FILE:имя_файла.txt:содержимое\n\n"
+    "Во всех остальных случаях — обычный текст с HTML тегами."
 )
 
 users       = {}   # { uid: pub_key_b64 }
@@ -90,6 +102,46 @@ def touch(uid): last_seen[uid] = time.time()
 
 @app.route('/')
 def index(): return render_template('chat.html')
+
+@app.route('/sw.js')
+def service_worker():
+    from flask import Response
+    import os
+    sw_path = os.path.join(app.root_path, 'templates', 'sw.js')
+    with open(sw_path, 'r') as f:
+        sw_code = f.read()
+    resp = Response(sw_code, mimetype='application/javascript')
+    resp.headers['Service-Worker-Allowed'] = '/'
+    resp.headers['Cache-Control'] = 'no-cache'
+    return resp
+
+@app.get('/push/poll')
+def push_poll():
+    """Service worker polls this to get pending notifications."""
+    uid = request.args.get('user_id','').strip()
+    if uid not in user_keys:
+        return jsonify({'notifications': []})
+    # Return unread notifications created in last 10 seconds
+    now = time.time()
+    cutoff = now - 10
+    notifs = []
+    for n in notifications.get(uid, []):
+        if not n.get('sw_sent') and n['ts'] > cutoff:
+            n['sw_sent'] = True
+            ntype = n.get('type','')
+            if ntype == 'incoming_call':
+                meta = n.get('meta',{})
+                notifs.append({
+                    'title': '📞 Входящий звонок',
+                    'body': n['text'],
+                    'icon': meta.get('avatar','🔔')
+                })
+            elif ntype in ('message','chat_request','request_accepted','channel_sub'):
+                notifs.append({
+                    'title': '💬 Cyber Messenger',
+                    'body': n['text']
+                })
+    return jsonify({'notifications': notifs})
 
 # ── Auth ───────────────────────────────────────────────────
 @app.get('/check_user')
@@ -150,6 +202,7 @@ def get_user_profile(user_id):
         "display_name": p.get("display_name", user_id),
         "avatar": p.get("avatar","🙂"),
         "avatar_color": p.get("avatar_color","#1a6fd4,#3b9eff"),
+        "avatar_photo": p.get("avatar_photo",""),
         "status": p.get("status",""),
         "is_private": p.get("is_private",False),
         "online": is_online(user_id),
@@ -159,13 +212,20 @@ def get_user_profile(user_id):
 @app.post('/profile/<user_id>')
 def set_profile(user_id):
     profiles.setdefault(user_id,{"display_name":user_id,"avatar":"🙂","status":"","theme":"dark"})
-    for k in ["display_name","avatar","avatar_photo","avatar_color","status","theme","is_private"]:
+    for k in ["display_name","avatar","avatar_color","avatar_photo","status","theme","is_private"]:
         if k in request.json: profiles[user_id][k]=request.json[k]
     return jsonify({"status":"ok","profile":profiles[user_id]})
 
 @app.get('/profiles')
 def get_all_profiles():
-    return jsonify({uid:{"display_name":p["display_name"],"avatar":p["avatar"],"avatar_photo":p.get("avatar_photo"),"avatar_color":p.get("avatar_color","#1a6fd4,#3b9eff"),"status":p["status"],"online":is_online(uid)} for uid,p in profiles.items()})
+    return jsonify({uid:{
+        "display_name":p["display_name"],
+        "avatar":p["avatar"],
+        "avatar_color":p.get("avatar_color","#1a6fd4,#3b9eff"),
+        "avatar_photo":p.get("avatar_photo",""),
+        "status":p["status"],
+        "online":is_online(uid)
+    } for uid,p in profiles.items()})
 
 # ── Messages ───────────────────────────────────────────────
 @app.post('/send')
@@ -192,6 +252,12 @@ def send():
         except Exception as e: print(f"Encrypt error: {e}")
     else:
         messages[to].append({"from":sender,"ciphertext":text,"msg_id":msg_id,"timestamp":time.time()})
+    # Push notification for recipient
+    if not is_online(to) or True:  # always push so SW can show it when tab hidden
+        sp = profiles.get(sender, {})
+        sname = sp.get('display_name', sender)
+        preview = text[:60] if text else '📎 Файл'
+        push_notif(to, 'message', f"{sname}: {preview}", {'from': sender})
     return jsonify({"status":"sent","msg_id":msg_id})
 
 @app.post('/read')
@@ -291,6 +357,23 @@ def upload_file():
     fid=str(uuid.uuid4())
     files_store[fid]={"name":f.filename,"mime":f.content_type or 'application/octet-stream',"data":base64.b64encode(f.read()).decode(),"uploaded_by":uid,"ts":time.time()}
     return jsonify({"status":"ok","file_id":fid,"name":f.filename,"mime":f.content_type})
+
+@app.post('/upload_avatar')
+def upload_avatar():
+    """Upload photo as avatar — stores as data URL in profile."""
+    uid = request.form.get('user_id','')
+    if uid not in user_keys: return jsonify({"error":"not authorized"}),401
+    touch(uid)
+    f = request.files.get('file')
+    if not f: return jsonify({"error":"no file"}),400
+    mime = f.content_type or 'image/jpeg'
+    if not mime.startswith('image/'):
+        return jsonify({"error":"only images allowed"}),400
+    data = base64.b64encode(f.read()).decode()
+    data_url = f"data:{mime};base64,{data}"
+    profiles.setdefault(uid, {})
+    profiles[uid]['avatar_photo'] = data_url
+    return jsonify({"status":"ok","avatar_photo":data_url})
 
 @app.get('/file/<file_id>')
 def get_file(file_id):
@@ -771,9 +854,10 @@ def get_reactions():
 
 # ── AI Bot ─────────────────────────────────────────────────
 def groq_request(history):
-    resp=requests.post(GROQ_URL,headers={"Authorization":f"Bearer {GROQ_API_KEY}","Content-Type":"application/json"},
-        json={"model":GROQ_MODEL,"messages":history,"max_tokens":1024},timeout=20)
+    resp=requests.post(GROQ_URL,headers={"Authorization":f"Bearer {GROQ_API_KEY}","Content-Type":"application/json; charset=utf-8"},
+        json={"model":GROQ_MODEL,"messages":history,"max_tokens":4096},timeout=30)
     resp.raise_for_status()
+    resp.encoding='utf-8'
     return resp.json()["choices"][0]["message"]["content"]
 
 ai_history={}
@@ -836,6 +920,19 @@ def ask_ai(sender, message):
             else: break
     ai_history[sender].pop()
     return "⚠️ AI перегружен, попробуй через 10 сек"
+
+def bot_send_file(sender_pub, to_uid, filename, mime, data_bytes, caption=""):
+    """Bot sends a file to user."""
+    fid = str(uuid.uuid4())
+    files_store[fid] = {
+        "name": filename, "mime": mime,
+        "data": base64.b64encode(data_bytes).decode(),
+        "uploaded_by": BOT_ID, "ts": time.time()
+    }
+    payload = json.dumps({"text": caption, "id": str(uuid.uuid4()), "file_id": fid})
+    ct = encrypt_message(bot_priv, sender_pub, payload)
+    messages.setdefault(to_uid, [])
+    messages[to_uid].append({"from": BOT_ID, "ciphertext": ct, "msg_id": str(uuid.uuid4()), "timestamp": time.time()})
 
 def bot_loop():
     print("🤖 Бот запущен")
@@ -900,6 +997,23 @@ def bot_loop():
                         elif income=='[file]':
                             income="Пользователь прислал файл, но содержимое недоступно."
                         reply=try_builtin(income) or ask_ai(sender,income)
+                        # SVG — рендерим прямо в сообщении как инлайн картинку
+                        if reply and reply.strip().startswith("<svg"):
+                            svg = reply.strip()
+                            # Оборачиваем в div чтобы рендерилось в чате
+                            inline_html = f'<div class="bot-svg-img" style="max-width:100%;border-radius:12px;overflow:hidden;background:#fff;padding:4px">{svg}</div>'
+                            ct=encrypt_message(bot_priv,spub,json.dumps({"text":inline_html,"id":str(uuid.uuid4())}))
+                            messages.setdefault(sender,[])
+                            messages[sender].append({"from":BOT_ID,"ciphertext":ct,"msg_id":str(uuid.uuid4()),"timestamp":time.time()})
+                            continue
+                        # FILE: — отправляем как скачиваемый файл
+                        if reply and reply.strip().startswith("FILE:"):
+                            parts = reply.strip()[5:].split(":", 1)
+                            if len(parts) == 2:
+                                fname, fcontent = parts
+                                mime = "text/html" if fname.endswith(".html") else "text/plain"
+                                bot_send_file(spub, sender, fname.strip(), mime, fcontent.encode('utf-8'), f"📄 Файл готов: {fname.strip()}")
+                                continue
                         ct=encrypt_message(bot_priv,spub,json.dumps({"text":reply,"id":str(uuid.uuid4())}))
                         messages.setdefault(sender,[])
                         messages[sender].append({"from":BOT_ID,"ciphertext":ct,"msg_id":str(uuid.uuid4()),"timestamp":time.time()})
