@@ -907,18 +907,34 @@ def ask_ai(sender, message):
     if sender not in ai_history:
         ai_history[sender]=[{"role":"system","content":SYSTEM_PROMPT}]
     ai_history[sender].append({"role":"user","content":message})
+    last_error=""
     for attempt in range(3):
         try:
             reply=groq_request(ai_history[sender])
-            ai_history[sender].append({"role":"assistant","content":reply})
+            # Не сохраняем SVG и FILE в историю — они огромные и переполняют контекст
+            if reply and (reply.strip().startswith("<svg") or reply.strip().startswith("FILE:")):
+                history_reply="[сгенерировано изображение/файл]"
+            else:
+                history_reply=reply
+            ai_history[sender].append({"role":"assistant","content":history_reply})
+            # Обрезаем историю: system + последние 10 пар
             if len(ai_history[sender])>21:
                 ai_history[sender]=[ai_history[sender][0]]+ai_history[sender][-20:]
             return reply
         except Exception as e:
+            last_error=str(e)
             print(f"AI попытка {attempt+1}: {e}")
-            if "429" in str(e): time.sleep(5)
-            else: break
+            if "429" in last_error or "503" in last_error or "502" in last_error:
+                time.sleep(5)
+            elif "413" in last_error or "context" in last_error.lower() or "token" in last_error.lower():
+                # Контекст переполнен — сбрасываем историю и пробуем снова
+                print(f"Сброс истории для {sender} из-за переполнения контекста")
+                ai_history[sender]=[{"role":"system","content":SYSTEM_PROMPT},{"role":"user","content":message}]
+                time.sleep(1)
+            else:
+                time.sleep(2)
     ai_history[sender].pop()
+    print(f"AI окончательная ошибка для {sender}: {last_error}")
     return "⚠️ AI перегружен, попробуй через 10 сек"
 
 def bot_send_file(sender_pub, to_uid, filename, mime, data_bytes, caption=""):
