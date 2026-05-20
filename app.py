@@ -91,46 +91,6 @@ def touch(uid): last_seen[uid] = time.time()
 @app.route('/')
 def index(): return render_template('chat.html')
 
-@app.route('/sw.js')
-def service_worker():
-    from flask import Response
-    import os
-    sw_path = os.path.join(app.root_path, 'templates', 'sw.js')
-    with open(sw_path, 'r') as f:
-        sw_code = f.read()
-    resp = Response(sw_code, mimetype='application/javascript')
-    resp.headers['Service-Worker-Allowed'] = '/'
-    resp.headers['Cache-Control'] = 'no-cache'
-    return resp
-
-@app.get('/push/poll')
-def push_poll():
-    """Service worker polls this to get pending notifications."""
-    uid = request.args.get('user_id','').strip()
-    if uid not in user_keys:
-        return jsonify({'notifications': []})
-    # Return unread notifications created in last 10 seconds
-    now = time.time()
-    cutoff = now - 10
-    notifs = []
-    for n in notifications.get(uid, []):
-        if not n.get('sw_sent') and n['ts'] > cutoff:
-            n['sw_sent'] = True
-            ntype = n.get('type','')
-            if ntype == 'incoming_call':
-                meta = n.get('meta',{})
-                notifs.append({
-                    'title': '📞 Входящий звонок',
-                    'body': n['text'],
-                    'icon': meta.get('avatar','🔔')
-                })
-            elif ntype in ('message','chat_request','request_accepted','channel_sub'):
-                notifs.append({
-                    'title': '💬 Cyber Messenger',
-                    'body': n['text']
-                })
-    return jsonify({'notifications': notifs})
-
 # ── Auth ───────────────────────────────────────────────────
 @app.get('/check_user')
 def check_user():
@@ -199,13 +159,13 @@ def get_user_profile(user_id):
 @app.post('/profile/<user_id>')
 def set_profile(user_id):
     profiles.setdefault(user_id,{"display_name":user_id,"avatar":"🙂","status":"","theme":"dark"})
-    for k in ["display_name","avatar","avatar_color","status","theme","is_private"]:
+    for k in ["display_name","avatar","avatar_photo","avatar_color","status","theme","is_private"]:
         if k in request.json: profiles[user_id][k]=request.json[k]
     return jsonify({"status":"ok","profile":profiles[user_id]})
 
 @app.get('/profiles')
 def get_all_profiles():
-    return jsonify({uid:{"display_name":p["display_name"],"avatar":p["avatar"],"avatar_color":p.get("avatar_color","#1a6fd4,#3b9eff"),"status":p["status"],"online":is_online(uid)} for uid,p in profiles.items()})
+    return jsonify({uid:{"display_name":p["display_name"],"avatar":p["avatar"],"avatar_photo":p.get("avatar_photo"),"avatar_color":p.get("avatar_color","#1a6fd4,#3b9eff"),"status":p["status"],"online":is_online(uid)} for uid,p in profiles.items()})
 
 # ── Messages ───────────────────────────────────────────────
 @app.post('/send')
@@ -232,12 +192,6 @@ def send():
         except Exception as e: print(f"Encrypt error: {e}")
     else:
         messages[to].append({"from":sender,"ciphertext":text,"msg_id":msg_id,"timestamp":time.time()})
-    # Push notification for recipient
-    if not is_online(to) or True:  # always push so SW can show it when tab hidden
-        sp = profiles.get(sender, {})
-        sname = sp.get('display_name', sender)
-        preview = text[:60] if text else '📎 Файл'
-        push_notif(to, 'message', f"{sname}: {preview}", {'from': sender})
     return jsonify({"status":"sent","msg_id":msg_id})
 
 @app.post('/read')
