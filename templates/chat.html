@@ -644,27 +644,20 @@ code{background:rgba(59,158,255,.12);border:1px solid rgba(59,158,255,.2);border
   <div class="prof-modal">
     <div class="pm-head"><span>👤 Мой профиль</span><button class="pm-x" onclick="closeProf()">×</button></div>
     <div class="pm-body">
-      <!-- Avatar preview + mode toggle -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:6px">
-        <div style="position:relative;width:72px;cursor:pointer" id="av-preview-wrap" title="Нажми для загрузки фото" onclick="document.getElementById('av-photo-inp').click()">
-          <div class="av-big" id="av-preview">🙂</div>
-          <div id="av-photo-badge" style="position:absolute;bottom:-4px;right:-4px;width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,.4)">📷</div>
-          <input type="file" id="av-photo-inp" accept="image/*" style="display:none" onchange="uploadAvatarPhoto(this)">
-        </div>
-        <!-- Mode toggle buttons -->
-        <div style="display:flex;gap:6px;margin-top:2px">
-          <button id="av-mode-emoji" onclick="switchAvMode('emoji')" style="font-size:.72em;padding:3px 10px;border-radius:20px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;transition:.15s">😊 Эмодзи</button>
-          <button id="av-mode-photo" onclick="switchAvMode('photo')" style="font-size:.72em;padding:3px 10px;border-radius:20px;border:1.5px solid var(--glass-b);background:var(--glass);color:var(--txt2);cursor:pointer;transition:.15s">📷 Фото</button>
-        </div>
-        <div id="av-remove-photo" style="display:none;font-size:.7em;color:#ff5e5e;cursor:pointer;text-decoration:underline;margin-top:-2px" onclick="removeAvatarPhoto()">✕ Удалить фото</div>
+      <div style="position:relative;width:72px;margin:0 auto 2px;cursor:pointer" id="av-photo-wrap" onclick="document.getElementById('av-photo-inp').click()" title="Нажми для загрузки фото">
+        <div class="av-big" id="av-preview">🙂</div>
+        <div id="av-badge" style="position:absolute;bottom:-4px;right:-4px;width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,.4)">📷</div>
+        <input type="file" id="av-photo-inp" accept="image/*" style="display:none" onchange="uploadAvatarPhoto(this)">
       </div>
-      <div id="av-emoji-section">
-        <div class="av-grid" id="av-grid"></div>
-        <div class="av-color-section">
-          <span class="av-color-label">ЦВЕТ АВАТАРКИ</span>
-          <div class="av-palette" id="av-palette">
-            <!-- built by JS -->
-          </div>
+      <div style="text-align:center;font-size:.7em;color:var(--txt2);margin-bottom:6px" id="av-hint">Нажми на аватарку чтобы загрузить фото</div>
+      <div style="text-align:center;margin-bottom:4px" id="av-remove-wrap" style="display:none">
+        <button onclick="removeAvatarPhoto()" style="background:transparent;border:1px solid var(--glass-b);color:var(--txt2);border-radius:8px;padding:3px 12px;font-size:.75em;cursor:pointer;transition:.15s" onmouseover="this.style.borderColor='#ff6464';this.style.color='#ff6464'" onmouseout="this.style.borderColor='var(--glass-b)';this.style.color='var(--txt2)'">✕ Убрать фото → эмодзи</button>
+      </div>
+      <div class="av-grid" id="av-grid"></div>
+      <div class="av-color-section">
+        <span class="av-color-label">ЦВЕТ АВАТАРКИ</span>
+        <div class="av-palette" id="av-palette">
+          <!-- built by JS -->
         </div>
       </div>
       <div><label class="pf-label">ОТОБРАЖАЕМОЕ ИМЯ</label><input class="pf-input" id="pf-name" placeholder="Как тебя зовут?"></div>
@@ -1232,14 +1225,18 @@ function openProf(){
         preview.style.backgroundSize='cover';
         preview.style.backgroundPosition='center';
         preview.innerText='';
-        switchAvMode('photo');
+        document.getElementById('av-badge').innerText='🔄';
+        document.getElementById('av-hint').innerText='Нажми чтобы сменить фото';
+        document.getElementById('av-remove-wrap').style.display='block';
     } else {
         preview.style.backgroundImage='';
         preview.innerText=selAv;
         const [c1,c2]=selAvColor.split(',');
         preview.style.background=`linear-gradient(135deg,${c1},${c2})`;
         preview.style.boxShadow=`0 6px 20px ${c2}55`;
-        switchAvMode('emoji');
+        document.getElementById('av-badge').innerText='📷';
+        document.getElementById('av-hint').innerText='Нажми на аватарку чтобы загрузить фото';
+        document.getElementById('av-remove-wrap').style.display='none';
     }
     document.getElementById('pf-name').value=myProfile.display_name||'';
     document.getElementById('pf-status').value=myProfile.status||'';
@@ -1255,10 +1252,7 @@ async function saveProf(){
     const isPrivate=document.getElementById('pf-private').checked;
     const name=document.getElementById('pf-name').value.trim();
     const status=document.getElementById('pf-status').value.trim();
-    // If emoji mode is active, clear the photo
-    const inEmojiMode=document.getElementById('av-emoji-section').style.display!=='none';
-    const photoToSave=inEmojiMode?'':myProfile.avatar_photo||'';
-    myProfile={display_name:name||myId,avatar:selAv,avatar_color:selAvColor,avatar_photo:photoToSave,status,theme:selTheme,is_private:isPrivate};
+    myProfile={display_name:name||myId,avatar:selAv,avatar_color:selAvColor,avatar_photo:myProfile.avatar_photo||'',status,theme:selTheme,is_private:isPrivate};
     await fetch(`/profile/${myId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(myProfile)});
     applyTheme(selTheme);updateSidebar();document.getElementById('overlay').classList.remove('open');
 }
@@ -1273,69 +1267,37 @@ async function uploadAvatarPhoto(input){
     if(r.ok){
         const data=await r.json();
         myProfile.avatar_photo=data.avatar_photo;
+        // Show in preview
         const preview=document.getElementById('av-preview');
         preview.style.backgroundImage=`url('${data.avatar_photo}')`;
         preview.style.backgroundSize='cover';
         preview.style.backgroundPosition='center';
         preview.innerText='';
+        document.getElementById('av-badge').innerText='🔄';
+        document.getElementById('av-hint').innerText='Нажми чтобы сменить фото';
+        document.getElementById('av-remove-wrap').style.display='block';
+        // Save immediately
         await fetch(`/profile/${myId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({avatar_photo:data.avatar_photo})});
         updateSidebar();
-        switchAvMode('photo');
-    }
-}
-
-function switchAvMode(mode){
-    const emojiSec=document.getElementById('av-emoji-section');
-    const wrap=document.getElementById('av-preview-wrap');
-    const badge=document.getElementById('av-photo-badge');
-    const removeBtn=document.getElementById('av-remove-photo');
-    const btnEmoji=document.getElementById('av-mode-emoji');
-    const btnPhoto=document.getElementById('av-mode-photo');
-    const preview=document.getElementById('av-preview');
-    if(mode==='emoji'){
-        emojiSec.style.display='block';
-        wrap.onclick=null; wrap.style.cursor='default';
-        badge.style.display='none';
-        removeBtn.style.display='none';
-        btnEmoji.style.cssText='font-size:.72em;padding:3px 10px;border-radius:20px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;transition:.15s';
-        btnPhoto.style.cssText='font-size:.72em;padding:3px 10px;border-radius:20px;border:1.5px solid var(--glass-b);background:var(--glass);color:var(--txt2);cursor:pointer;transition:.15s';
-        preview.style.backgroundImage='';
-        preview.style.backgroundSize='';
-        preview.style.backgroundPosition='';
-        preview.innerText=selAv||'🙂';
-        const [c1,c2]=(selAvColor||'#1a6fd4,#3b9eff').split(',');
-        preview.style.background=`linear-gradient(135deg,${c1},${c2})`;
-        preview.style.boxShadow=`0 6px 20px ${c2}55`;
-    } else {
-        emojiSec.style.display='none';
-        wrap.onclick=()=>document.getElementById('av-photo-inp').click();
-        wrap.style.cursor='pointer';
-        badge.style.display='flex';
-        btnPhoto.style.cssText='font-size:.72em;padding:3px 10px;border-radius:20px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;transition:.15s';
-        btnEmoji.style.cssText='font-size:.72em;padding:3px 10px;border-radius:20px;border:1.5px solid var(--glass-b);background:var(--glass);color:var(--txt2);cursor:pointer;transition:.15s';
-        if(myProfile.avatar_photo){
-            preview.style.backgroundImage=`url('${myProfile.avatar_photo}')`;
-            preview.style.backgroundSize='cover';
-            preview.style.backgroundPosition='center';
-            preview.style.background='';
-            preview.style.boxShadow='';
-            preview.innerText='';
-            removeBtn.style.display='block';
-        } else {
-            preview.style.backgroundImage='';
-            preview.style.background='var(--glass)';
-            preview.style.boxShadow='none';
-            preview.innerText='📷';
-            removeBtn.style.display='none';
-        }
     }
 }
 
 async function removeAvatarPhoto(){
     myProfile.avatar_photo='';
-    await fetch(`/profile/${myId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({avatar_photo:''})});
+    const preview=document.getElementById('av-preview');
+    preview.style.backgroundImage='';
+    preview.innerText=selAv||myProfile.avatar||'🙂';
+    const [c1,c2]=(selAvColor||myProfile.avatar_color||'#1a6fd4,#3b9eff').split(',');
+    preview.style.background=`linear-gradient(135deg,${c1},${c2})`;
+    preview.style.boxShadow=`0 6px 20px ${c2}55`;
+    document.getElementById('av-badge').innerText='📷';
+    document.getElementById('av-hint').innerText='Нажми на аватарку чтобы загрузить фото';
+    document.getElementById('av-remove-wrap').style.display='none';
+    // Reset file input so same file can be re-uploaded if needed
+    document.getElementById('av-photo-inp').value='';
+    // Save immediately
+    await fetch(`/profile/${myId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...myProfile,avatar_photo:''})});
     updateSidebar();
-    switchAvMode('emoji');
 }
 
 // ── Tabs ─────────────────────────────────────────────────────
